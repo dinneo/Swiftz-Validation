@@ -7,7 +7,8 @@
 //
 
 import XCTest
-@testable import SwiftzValidation
+// MARK: - This import name must be valid swift source file name
+@testable import Swiftz_Validation
 
 class Swiftz_ValidationTests: XCTestCase {
     
@@ -21,7 +22,7 @@ class Swiftz_ValidationTests: XCTestCase {
     }
     
     func isPasswordLongEnough(_ password:String) -> Validation<[String], String> {
-        if password.characters.count < 8 {
+        if password.count < 8 {
             return Validation.Failure(["Password must have more than 8 characters."])
         } else {
             return Validation.Success(password)
