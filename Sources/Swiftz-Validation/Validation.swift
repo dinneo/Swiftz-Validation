@@ -10,13 +10,13 @@ import Foundation
 
 public enum Validation<L,R> {
     
-    case Failure(L)
-    case Success(R)
+    case failure(L)
+    case success(R)
     
     /// Returns the value of `Success` if it exists otherwise nil.
     public var success : R? {
         switch self {
-        case .Success(let r): return r
+        case .success(let r): return r
         default: return nil
         }
     }
@@ -24,7 +24,7 @@ public enum Validation<L,R> {
     /// Returns the value of `Failure` if it exists otherwise nil.
     public var failure : L? {
         switch self {
-        case .Failure(let l): return l
+        case .failure(let l): return l
         default: return nil
         }
     }
@@ -38,17 +38,17 @@ extension Validation /*: Functor*/ {
     
     public func fmap<B>(_ f : @escaping (A) -> B) -> Validation<L,B> {
         switch self {
-        case .Failure(let a):
-            return Validation<L,B>.Failure(a)
-        case .Success(let b):
-            return Validation<L,B>.Success(f(b))
+        case .failure(let a):
+            return Validation<L,B>.failure(a)
+        case .success(let b):
+            return Validation<L,B>.success(f(b))
         }
     }
 }
 
 extension Validation /*: Pointed*/ {
     public static func pure(_ x : R) -> Validation<L,R> {
-        return Validation.Success(x)
+        return Validation.success(x)
     }
 }
 
@@ -58,10 +58,10 @@ extension Validation /*: Applicative*/ {
     
     public func ap<B>(_ f : Validation<L,(A) -> B>) -> Validation<L,B> {
         switch self {
-        case .Success(let b):
+        case .success(let b):
             return f.fmap{ $0(b) }
-        case .Failure(let l):
-            return Validation<L,B>.Failure(l)
+        case .failure(let l):
+            return Validation<L,B>.failure(l)
 
         }
     }
@@ -87,20 +87,20 @@ extension Validation /*: ApplicativeOps*/ {
     }
 }
 
-extension Validation where L:Concatable/*: Semigroup*/ {
+public extension Validation where L:Concatable/*: Semigroup*/ {
     
-    typealias FA = Validation<L,A>
+    public typealias FA = Validation<L,A>
     
-    func sconcat(_ other : FA) -> FA {
+    public func sconcat(_ other : FA) -> FA {
         switch self {
-        case .Success( _):
+        case .success( _):
             return other
-        case .Failure(let error):
+        case .failure(let error):
             switch other {
-            case .Success( _):
+            case .success( _):
                 return self
-            case .Failure(let otherError):
-                return Validation<L,A>.Failure(error.concat(otherError))
+            case .failure(let otherError):
+                return Validation<L,A>.failure(error.concat(otherError))
             }
         }
     }
