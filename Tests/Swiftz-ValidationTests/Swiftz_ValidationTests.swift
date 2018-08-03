@@ -23,26 +23,26 @@ class Swiftz_ValidationTests: XCTestCase {
     
     func isPasswordLongEnough(_ password:String) -> Validation<[String], String> {
         if password.count < 8 {
-            return Validation.Failure(["Password must have more than 8 characters."])
+            return Validation.failure(["Password must have more than 8 characters."])
         } else {
-            return Validation.Success(password)
+            return Validation.success(password)
         }
     }
     
     func isPasswordStrongEnough(_ password:String) -> Validation<[String], String> {
         if (password.range(of:"[\\W]", options: .regularExpression) != nil){
-            return Validation.Success(password)
+            return Validation.success(password)
         } else {
-            return Validation.Failure(["Password must contain a special character."])
+            return Validation.failure(["Password must contain a special character."])
         }
     }
     
     //Use case provided by Jesús López
     func isDifferentUserPass(_ user:String, _ password:String) -> Validation<[String], String> {
         if (user == password){
-            return Validation.Failure(["Username and password MUST be different."])
+            return Validation.failure(["Username and password MUST be different."])
         } else {
-            return Validation.Success(password)
+            return Validation.success(password)
         }
     }
     
@@ -69,19 +69,19 @@ class Swiftz_ValidationTests: XCTestCase {
         XCTAssert(validation5.success == 5)
     }
     
-    func testAppliativeLiftAFailure(){
+    func testAppliativeLiftAfailure(){
         let add2 = { $0 + 2 }
-        let validation3 = Validation<String, Int>.Failure("Error")
+        let validation3 = Validation<String, Int>.failure("Error")
         let validation5 = Validation.liftA(add2) (validation3)
         XCTAssert(validation5.success == nil && validation5.failure == "Error")
     }
     
-    func testSemigroupFailure(){
+    func testSemigroupfailure(){
         let result = isPasswordValid(user: "Richi", password: "Richi")
         XCTAssert(result.success == nil && result.failure! == ["Password must have more than 8 characters.", "Password must contain a special character.","Username and password MUST be different."])
     }
     
-    func testSemigroupSuccess(){
+    func testSemigroupsuccess(){
         let result = isPasswordValid(user:"Richi", password: "Ricardo$")
         XCTAssert(result.success == "Ricardo$" && result.failure == nil)
     }
