@@ -69,19 +69,19 @@ class Swiftz_ValidationTests: XCTestCase {
         XCTAssert(validation5.success == 5)
     }
     
-    func testAppliativeLiftAFailure(){
+    func testAppliativeLiftAfailure(){
         let add2 = { $0 + 2 }
         let validation3 = Validation<String, Int>.failure("Error")
         let validation5 = Validation.liftA(add2) (validation3)
         XCTAssert(validation5.success == nil && validation5.failure == "Error")
     }
     
-    func testSemigroupFailure(){
+    func testSemigroupfailure(){
         let result = isPasswordValid(user: "Richi", password: "Richi")
         XCTAssert(result.success == nil && result.failure! == ["Password must have more than 8 characters.", "Password must contain a special character.","Username and password MUST be different."])
     }
     
-    func testSemigroupSuccess(){
+    func testSemigroupsuccess(){
         let result = isPasswordValid(user:"Richi", password: "Ricardo$")
         XCTAssert(result.success == "Ricardo$" && result.failure == nil)
     }
