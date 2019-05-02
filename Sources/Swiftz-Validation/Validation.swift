@@ -87,7 +87,7 @@ extension Validation /*: ApplicativeOps*/ {
     }
 }
 
-public extension Validation where L:Concatable/*: Semigroup*/ {
+extension Validation where L:Concatable/*: Semigroup*/ {
     
     public typealias FA = Validation<L,A>
     
